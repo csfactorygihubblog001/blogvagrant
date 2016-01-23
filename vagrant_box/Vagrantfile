@@ -1,0 +1,64 @@
+Vagrant.configure(2) do |config|
+
+#   vagrant init ${boxname} で作成したhost名を指定する。
+#   当該boxをベースにして以下の１－４は作成される
+#	config.vm.box = "manageterm"
+
+
+#   *************** ４：元々設定してたmanagetermも複数起動に際し変更 ***************
+  	config.vm.define :manageterm do |manageterm|
+  #   ホスト名の指定
+		manageterm.vm.box = "manageterm"
+  		manageterm.vm.hostname = "manageterm"
+  		manageterm.vm.network "private_network", ip: '192.168.134.195'
+#  		manageterm.vm.network "public_network", ip: '192.168.102.195',bridge: "Intel(R) Wireless-N 7260"
+  		manageterm.vm.network "public_network", ip: '192.168.102.195'
+  		manageterm.vm.provider "virtualbox" do |vb|
+   			vb.gui = true
+  		end
+  	end
+
+#   *************** ３：管理サーバ用 IPアドレスとconfigの変数名のみ変更***************
+	config.vm.define :adminserv01 do |adminserv01|
+		adminserv01.vm.box = "adminserv01"
+		adminserv01.vm.hostname = "adminserv01"
+		adminserv01.vm.network "private_network", ip: '192.168.134.198'
+		adminserv01.vm.network "public_network", ip: '192.168.102.198',bridge: "Intel(R) Wireless-N 7260"
+		adminserv01.vm.provider "virtualbox" do |vb|
+			vb.gui = true
+		end
+	end
+
+#   *************** １：アプリケーションサーバ用 ***************
+
+	config.vm.define :apserv01 do |apserv01|
+	apserv01.vm.box = "apserv01"
+
+#   ホスト名の指定
+		apserv01.vm.hostname = "apserv01"
+    #   ネットワークのタイプをＤＨＣＰではなくｓｔａｔｉｃにする。
+    #ネットワークの設定(ホストとゲスト間のプライベートネットワーク（不要ならコメント)
+		apserv01.vm.network "private_network", ip: '192.168.134.196'
+    #ネットワークの設定(ホストと同じセグメントのネットワークに入る設定)
+		apserv01.vm.network "public_network", ip: '192.168.102.196',bridge: "Intel(R) Wireless-N 7260"
+
+		apserv01.vm.provider "virtualbox" do |vb|
+      #VirtualBoxが起動している時にGUIで表示する
+ 			vb.gui = true
+      #メモリを1Gに設定
+		end
+	end
+
+#   *************** ２：ＤＢサーバ用(IPアドレスとconfigの変数名のみ変更) ***************
+	config.vm.define :dbserv01 do |dbserv01|
+		dbserv01.vm.box = "dbserv01"
+		dbserv01.vm.hostname = "dbserv01"
+		dbserv01.vm.network "private_network", ip: '192.168.134.197'
+		dbserv01.vm.network "public_network", ip: '192.168.102.197',bridge: "Intel(R) Wireless-N 7260"
+		dbserv01.vm.provider "virtualbox" do |vb|
+			vb.gui = true
+		end
+	end
+
+
+end

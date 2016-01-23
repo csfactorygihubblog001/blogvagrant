@@ -1,0 +1,60 @@
+Vagrant.configure(2) do |config|
+
+#   vagrant init ${boxname} で作成したhost名を指定する。
+#   当該boxをベースにして以下の１－４は作成される
+#	config.vm.box = "manageterm"
+
+#   *************** １：アプリケーションサーバ用 ***************
+	config.vm.define :apserv01 do |servers|
+	servers.vm.box = "apserv01"
+#   ホスト名の指定
+		servers.vm.hostname = "apserv01"
+    #   ネットワークのタイプをＤＨＣＰではなくｓｔａｔｉｃにする。
+    #ネットワークの設定(ホストとゲスト間のプライベートネットワーク（不要ならコメント)
+		servers.vm.network "private_network", ip: '192.168.134.196'
+    #ネットワークの設定(ホストと同じセグメントのネットワークに入る設定)
+		servers.vm.network "public_network", ip: '192.168.102.196'
+
+		servers.vm.provider "virtualbox" do |vb|
+      #VirtualBoxが起動している時にGUIで表示する
+ 			vb.gui = true
+      #メモリを1Gに設定
+		end
+	end
+
+#   *************** ２：ＤＢサーバ用(IPアドレスとconfigの変数名のみ変更) ***************
+	config.vm.define :dbserv01 do |servers|
+		servers.vm.box = "dbserv01"
+		servers.vm.hostname = "dbserv01"
+		servers.vm.network "private_network", ip: '192.168.134.197'
+		servers.vm.network "public_network", ip: '192.168.102.197'
+		servers.vm.provider "virtualbox" do |vb|
+			vb.gui = true
+		end
+	end
+
+#   *************** ３：管理サーバ用 IPアドレスとconfigの変数名のみ変更***************
+	config.vm.define :adminserv01 do |servers|
+		servers.vm.box = "adminserv01"
+		servers.vm.hostname = "adminserv01"
+		servers.vm.network "private_network", ip: '192.168.134.198'
+		servers.vm.network "public_network", ip: '192.168.102.198'
+		servers.vm.provider "virtualbox" do |vb|
+			vb.gui = true
+		end
+	end
+
+#   *************** ４：元々設定してたmanagetermも複数起動に際し変更 ***************
+  	config.vm.define :manageterm do |servers|
+  #   ホスト名の指定
+  		servers.vm.hostname = "manageterm"
+  		servers.vm.network "private_network", ip: '192.168.134.195'
+  		servers.vm.network "public_network", ip: '192.168.102.195'
+  		servers.vm.provider "virtualbox" do |vb|
+   			vb.gui = true
+        vb.memory = "1024"
+  		end
+  	end
+
+
+end

@@ -1,0 +1,9 @@
+01_github/*
+01_github
+*.box
+*.iso
+*.msi
+*.exe
+vagrant_box_*
+.vagrant
+hostlocal
